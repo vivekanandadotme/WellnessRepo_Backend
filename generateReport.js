@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
+const path = require('path');
 
 async function generateReport(formData) {
   try {
@@ -9,7 +10,9 @@ async function generateReport(formData) {
     const htmlContent = await generateHTML(formData);
     await page.setContent(htmlContent);
 
-    const pdfPath = `reports/${formData.name}_report.pdf`;
+    const timestamp = new Date().toISOString().replace(/:/g, '-'); // Generate timestamp
+    const pdfFilename = `${formData.name}_${timestamp}_report.pdf`; // Unique filename
+    const pdfPath = path.join('reports', pdfFilename); // Construct path
     await page.pdf({ path: pdfPath, format: 'A4' });
 
     await browser.close();
