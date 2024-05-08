@@ -1,12 +1,12 @@
 const nodemailer = require('nodemailer');
 
-async function sendEmail(toEmail, attachmentPath) {
+async function sendEmail(toEmail, attachmentPath, fileName) {
   // Create reusable transporter object using SMTP transport
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'your-email@gmail.com',
-      pass: 'your-email-password'
+      user: 'justf8077@gmail.com',
+      pass: 'ubmo silp ljbu jiif'
     }
   });
 
@@ -16,7 +16,12 @@ async function sendEmail(toEmail, attachmentPath) {
     to: toEmail,
     subject: 'Your Wellness Report',
     text: 'Please find attached your wellness report.',
-    attachments: [{ path: attachmentPath }]
+    attachments: [
+      {
+        path: attachmentPath,
+        filename: `${fileName}.pdf` // Specify custom filename
+      }
+    ]
   });
 
   console.log('Email sent:', info.messageId);

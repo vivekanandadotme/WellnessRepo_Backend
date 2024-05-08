@@ -1,29 +1,34 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const generateReport = require('./generateReport');
 const sendEmail = require('./sendEmail');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+// Middleware to parse JSON bodies
+app.use(express.json());
 
 // Route to handle form submissions
 app.post('/submit', async (req, res) => {
   try {
-    // Process form data and generate report
-    const reportData = await generateReport(req.body);
+    // Call generateReport function with form data from request body
+    const formData = req.body;
+    const result = await generateReport(formData);
 
     // Send generated report via email
-    await sendEmail(reportData.email, reportData.pdfPath);
+    console.log(`Name is  ${formData.name}`);
+    await sendEmail(result.email, result.pdfPath, formData.name);
 
-    res.status(200).json({ message: 'Report generated and sent successfully!' });
+    // Send success response with generated report data
+    res.status(200).json(result);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    // Handle errors and send error response
+    console.error('Error generating report:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
